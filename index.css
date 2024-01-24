@@ -76,13 +76,6 @@ ul {
     width: 100%;
 }
 
-li-active {
-    color: #555;
-    text-decoration: line-through;
-    background: #000;
-}
-
-
 .mode i {
     font-size: 1.4rem;
     cursor: pointer;

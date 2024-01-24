@@ -31,15 +31,15 @@ darkModeToggle.addEventListener('change', () => {
 const input = document.querySelector('#input')
 const btn = document.querySelector('#btn')
 const result = document.querySelector('#result')
+const completed = document.querySelector('#completed')
 
 document.addEventListener('DOMContentLoaded', () => {
     loadTasks();
-    console.log(localStorage)
 });
 
 btn.addEventListener('click', (e) => {
     if (input.value === '') {
-        alert('You can\'t add an empty task!')
+         alert('You can\'t add an empty task!')
         return
     }
 
@@ -50,6 +50,8 @@ btn.addEventListener('click', (e) => {
     }
     createDeleteElements(input.value)
     input.value = ''
+
+    console.log(localStorage)
 })
 
 function checkTaskExists(task) {
@@ -85,34 +87,72 @@ function createDeleteElements(value, isCompleted) {
 
     check.addEventListener('change', (e) => {
         const li = e.target.closest('.li');
-        const taskText = li.querySelector('span').textContent;
         const isChecked = e.target.checked;
 
-        updateTaskCompletion(taskText, isChecked);
+        if (isChecked) {
+            completed.appendChild(li);
+        } else {
+            result.appendChild(li);
+        }
+
+        updateTaskCompletion(li.querySelector('span').textContent, isChecked);
+        ifNoTasks();
+        saveTasks();
     });
 
 
     btn.addEventListener('click', (e) => {
         let confirm1 = confirm('Do you really want to delete this task?');
         if (confirm1) {
-            result.removeChild(li);
+            if (isCompleted) {
+                completed.removeChild(li);
+            } else {
+                result.removeChild(li);
+            }
+            ifNoTasks();
         } else {
             return;
         }
         saveTasks();
     });
 
-    result.appendChild(li);
+    if (isCompleted) {
+        completed.appendChild(li);
+    } else {
+        result.appendChild(li);
+    }
+
     saveTasks();
+    ifNoTasks();
+}
+function ifNoTasks() {
+    const text = document.querySelector('.text');
+    const text2 = document.querySelector('.text2')
+
+    const tasksString = localStorage.getItem('tasks');
+    const tasksArray = JSON.parse(tasksString);
+
+    const isNotCompletedTaskExists = tasksArray.some(function(task) {
+        return task.isCompleted === false;
+    });
+    if (isNotCompletedTaskExists) {
+        text.style.display = 'none';
+    } else {
+        text.style.display = 'block';
+    }
+
+    const isCompletedTaskExists = tasksArray.some(function(task) {
+        return task.isCompleted === true;
+    });
+    if (isCompletedTaskExists) {
+        text2.style.display = 'none';
+    } else {
+        text2.style.display = 'block';
+    }
 }
 
 function updateTaskCompletion(taskText, isChecked) {
-    const tasks = Array.from(result.children).map((li) => {
-        return {
-            task: li.querySelector('span').textContent,
-            isCompleted: li.querySelector('.isComplete').checked
-        };
-    });
+    const tasks = loadTasksFromLocalStorage();
 
     const updatedTasks = tasks.map((task) => {
         if (task.task === taskText) {
@@ -124,57 +164,42 @@ function updateTaskCompletion(taskText, isChecked) {
         return task;
     });
 
-    localStorage.setItem('tasks', JSON.stringify(updatedTasks));
+    saveTasksToLocalStorage(updatedTasks);
+}
+
+function saveTasksToLocalStorage(tasks) {
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+}
+
+function loadTasksFromLocalStorage() {
+    const savedTasks = localStorage.getItem('tasks');
+    return savedTasks ? JSON.parse(savedTasks) : [];
+}
+
+function loadTasks() {
+    const tasks = loadTasksFromLocalStorage();
+
+    tasks.forEach((task) => {
+        createDeleteElements(task.task, task.isCompleted);
+    });
+
+    ifNoTasks();
 }
 
 function saveTasks() {
     const tasks = Array.from(result.children).map((li) => {
         return {
             task: li.querySelector('span').textContent,
-            isCompleted: li.querySelector('.isComplete').checked // Сохранение значения флага isCompleted
+            isCompleted: li.querySelector('.isComplete').checked
         };
     });
 
-    localStorage.setItem('tasks', JSON.stringify(tasks));
-}
+    const completedTasks = Array.from(completed.children).map((li) => {
+        return {
+            task: li.querySelector('span').textContent,
+            isCompleted: li.querySelector('.isComplete').checked
+        };
+    });
 
-function loadTasks() {
-    const savedTasks = localStorage.getItem('tasks');
-
-    if (savedTasks) {
-        try {
-            const tasks = JSON.parse(savedTasks);
-
-            tasks.forEach((task) => {
-                createDeleteElements(task.task, task.isCompleted);
-            });
-
-            // Если нет сохраненных задач
-            if (tasks.length === 0) {
-                result.innerHTML = 'No tasks';
-            }
-        } catch (error) {
-            console.error('Ошибка при парсинге JSON:', error);
-        }
-    } else {
-        // Если нет сохраненных задач
-        result.innerHTML = 'No tasks';
-    }
-}
-
-
-
-
-
-
-
-
-
-
-
-
-const savedTasks = localStorage.getItem('tasks');
-
-if (savedTasks === '[]') {
-    result.innerHTML = 'No tasks';
+    localStorage.setItem('tasks', JSON.stringify(tasks.concat(completedTasks)));
 }
