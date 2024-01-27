@@ -17,6 +17,7 @@ body {
     background: #ffffff;
     height: 100vh;
     color: #000;
+    min-height: 360px
 }
 
 /* Genral */
@@ -67,13 +68,14 @@ ul {
     padding: 4px 8px;
     text-transform: none;
     border: 1px solid #555;
-    margin: 10px 0;
+    margin: 10px -10px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     position: relative;
     z-index: 5;
     width: 100%;
+    min-height: 50px;
 }
 
 .mode i {
@@ -95,6 +97,7 @@ section {
     margin-top: 30px;
 }
 section div {
+    word-wrap: break-word;
     width: 40%;
 }
 
@@ -103,6 +106,7 @@ section div {
     height: 30px;
     margin-right: 10px;
     outline:none;
+
 }
 
 #btn {
@@ -130,15 +134,17 @@ ul {
     background: #f9532d;
     border: none;
     color: #eddfff;
-    margin-left: 15px;
+    margin-left: 80%;
     padding: 10px;
     cursor: pointer;
-    position: sticky;
+    position: absolute;
     z-index: 10;
 }
 
 .isComplete {
-    margin-left: 400px;
+    margin-left: 75%;
+    cursor: pointer;
+    position: absolute;
 }
 
 /*dark*/
@@ -238,14 +244,28 @@ ul {
     }
 }
 
+/* адаптивность */
+
 @media screen and (max-width: 1024px) {
     .container {
-        padding: 0 4.4rem;
+        padding: 0 2.4rem;
     }
 
-    .main h3 {
-        color: #000;
-        margin-top: 1rem;
+    #input {
+        width: 60%;
+    }
+
+    #btn {
+        width: 30%;
+        font-size: 14px;
+    }
+
+    .btn {
+        margin-left: 75%; /* Уменьшаем отступ кнопки "delete" */
+    }
+
+    .isComplete {
+        margin-left: 70%; /* Уменьшаем отступ чекбокса */
     }
 }
 
@@ -253,23 +273,87 @@ ul {
     .container {
         padding: 0 1.6rem;
     }
+
+    #input {
+        width: 50%;
+    }
+
+    #btn {
+        width: 40%;
+        font-size: 12px;
+    }
+
+    .btn {
+        margin-left: 70%; /* Уменьшаем отступ кнопки "delete" ещё больше */
+    }
+
+    .isComplete {
+        margin-left: 65%; /* Уменьшаем отступ чекбокса ещё больше */
+    }
 }
 
-@media screen and (max-width:600px) {
-    body {
-        height: auto;
+@media screen and (max-width: 600px) {
+    .li {
+        flex-direction: column;
+        align-items: flex-start;
+        min-height: 60px
     }
 
-    header {
-        height: auto;
+    .btn {
+        margin-left: 50%;
+        margin-top: 25px;
     }
 
-    .dark-mode ul {
-        background: var(--primary-dark);
+    .isComplete {
+        width: 20px;
+        height: 20px;
+        margin-left: 50%;
+
     }
 
-    .mode {
-        position: absolute;
-        right: 4rem;
+    .li div {
+        margin-bottom: 5px; /* Добавляем отступ снизу текста задачи */
+    }
+}
+
+@media screen and (max-width: 400px) {
+
+    #input {
+
+        height: 30px;
+        width: 70px;
+
+    }
+
+    #btn {
+
+        padding: 10px 1px;
+        width: 30px;
+        height: 35px;
+        font-size: 12px;
+
+
+    }
+
+    .li {
+        flex-direction: column;
+        align-items: flex-start;
+        min-height: 60px
+    }
+
+    .btn {
+        margin-left: 50%;
+        margin-top: 25px;
+    }
+
+    .isComplete {
+        width: 20px;
+        height: 20px;
+        margin-left: 50%;
+
+    }
+
+    .li div {
+        margin-bottom: 5px; /* Добавляем отступ снизу текста задачи */
     }
 }

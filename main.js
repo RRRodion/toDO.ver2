@@ -67,13 +67,13 @@ function checkTaskExists(task) {
 
 function createDeleteElements(value, isCompleted) {
     const li = document.createElement('li');
-    const span = document.createElement('span');
+    const div = document.createElement('div');
     const btn = document.createElement('button');
     const check = document.createElement('input');
 
     li.className = 'li';
-    span.textContent = value;
-    li.appendChild(span);
+    div.textContent = value;
+    li.appendChild(div);
 
     check.type = 'checkbox';
     check.className = 'isComplete';
@@ -95,7 +95,7 @@ function createDeleteElements(value, isCompleted) {
             result.appendChild(li);
         }
 
-        updateTaskCompletion(li.querySelector('span').textContent, isChecked);
+        updateTaskCompletion(li.querySelector('div').textContent, isChecked);
         ifNoTasks();
         saveTasks();
     });
@@ -189,14 +189,14 @@ function loadTasks() {
 function saveTasks() {
     const tasks = Array.from(result.children).map((li) => {
         return {
-            task: li.querySelector('span').textContent,
+            task: li.querySelector('div').textContent,
             isCompleted: li.querySelector('.isComplete').checked
         };
     });
 
     const completedTasks = Array.from(completed.children).map((li) => {
         return {
-            task: li.querySelector('span').textContent,
+            task: li.querySelector('div').textContent,
             isCompleted: li.querySelector('.isComplete').checked
         };
     });
