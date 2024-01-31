@@ -50,8 +50,6 @@ btn.addEventListener('click', (e) => {
     }
     createDeleteElements(input.value)
     input.value = ''
-
-    console.log(localStorage)
 })
 
 function checkTaskExists(task) {
@@ -96,24 +94,25 @@ function createDeleteElements(value, isCompleted) {
         }
 
         updateTaskCompletion(li.querySelector('div').textContent, isChecked);
-        ifNoTasks();
+
         saveTasks();
+        ifNoTasks();
     });
 
 
     btn.addEventListener('click', (e) => {
         let confirm1 = confirm('Do you really want to delete this task?');
         if (confirm1) {
+            const isCompleted = completed.contains(li); // Проверяем, находится ли элемент в списке завершенных задач
             if (isCompleted) {
                 completed.removeChild(li);
             } else {
                 result.removeChild(li);
             }
+
+            saveTasks();
             ifNoTasks();
-        } else {
-            return;
         }
-        saveTasks();
     });
 
     if (isCompleted) {
@@ -163,13 +162,9 @@ function updateTaskCompletion(taskText, isChecked) {
         }
         return task;
     });
-
-    saveTasksToLocalStorage(updatedTasks);
 }
 
-function saveTasksToLocalStorage(tasks) {
-    localStorage.setItem('tasks', JSON.stringify(tasks));
-}
+
 
 function loadTasksFromLocalStorage() {
     const savedTasks = localStorage.getItem('tasks');
