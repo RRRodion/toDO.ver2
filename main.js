@@ -122,8 +122,8 @@ function createDeleteElements(value, isCompleted) {
 }
 
 function ifNoTasks() {
-    const text = document.querySelector('.text');
-    const text2 = document.querySelector('.text2');
+    const noTasksTitle = document.querySelector('.text');
+    const noCompletedTasksTitle = document.querySelector('.text2');
 
     const tasksArray = loadTasksFromLocalStorage();
 
@@ -131,18 +131,18 @@ function ifNoTasks() {
         return task.isCompleted === false;
     });
     if (isNotCompletedTaskExists) {
-        text.style.display = 'none';
+        noTasksTitle.style.display = 'none';
     } else {
-        text.style.display = 'block';
+        noTasksTitle.style.display = 'block';
     }
 
     const isCompletedTaskExists = tasksArray.some(function(task) {
         return task.isCompleted === true;
     });
     if (isCompletedTaskExists) {
-        text2.style.display = 'none';
+        noCompletedTasksTitle.style.display = 'none';
     } else {
-        text2.style.display = 'block';
+        noCompletedTasksTitle.style.display = 'block';
     }
 }
 
