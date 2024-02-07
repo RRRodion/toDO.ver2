@@ -28,10 +28,10 @@ darkModeToggle.addEventListener('change', () => {
 
 
 //основа
-const input = document.querySelector('#input')
-const btn = document.querySelector('#btn')
-const result = document.querySelector('#result')
-const completed = document.querySelector('#completed')
+const input = document.querySelector('#input');
+const btn = document.querySelector('#btn');
+const result = document.querySelector('#result');
+const completed = document.querySelector('#completed');
 
 document.addEventListener('DOMContentLoaded', () => {
     loadTasks();
@@ -39,8 +39,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 btn.addEventListener('click', (e) => {
     if (input.value === '') {
-         alert('You can\'t add an empty task!')
-        return
+        alert('You can\'t add an empty task!');
+        return;
     }
 
     const taskAlreadyExists = checkTaskExists(input.value);
@@ -48,15 +48,14 @@ btn.addEventListener('click', (e) => {
         alert('Task already exists!');
         return;
     }
-    createDeleteElements(input.value)
-    input.value = ''
-})
+    createDeleteElements(input.value);
+    input.value = '';
+});
 
 function checkTaskExists(task) {
-    const savedTasks = localStorage.getItem('tasks');
+    const tasks = loadTasksFromLocalStorage();
 
-    if (savedTasks) {
-        const tasks = JSON.parse(savedTasks);
+    if (tasks) {
         return tasks.some((savedTask) => savedTask.task === task);
     }
 
@@ -75,7 +74,7 @@ function createDeleteElements(value, isCompleted) {
 
     check.type = 'checkbox';
     check.className = 'isComplete';
-    check.checked = isCompleted; // Устанавливаем значение флага isCompleted
+    check.checked = isCompleted;
     li.appendChild(check);
 
     btn.className = 'btn';
@@ -93,17 +92,14 @@ function createDeleteElements(value, isCompleted) {
             result.appendChild(li);
         }
 
-        updateTaskCompletion(li.querySelector('div').textContent, isChecked);
-
         saveTasks();
         ifNoTasks();
     });
 
-
     btn.addEventListener('click', (e) => {
         let confirm1 = confirm('Do you really want to delete this task?');
         if (confirm1) {
-            const isCompleted = completed.contains(li); // Проверяем, находится ли элемент в списке завершенных задач
+            const isCompleted = completed.contains(li);
             if (isCompleted) {
                 completed.removeChild(li);
             } else {
@@ -124,12 +120,12 @@ function createDeleteElements(value, isCompleted) {
     saveTasks();
     ifNoTasks();
 }
+
 function ifNoTasks() {
     const text = document.querySelector('.text');
-    const text2 = document.querySelector('.text2')
+    const text2 = document.querySelector('.text2');
 
-    const tasksString = localStorage.getItem('tasks');
-    const tasksArray = JSON.parse(tasksString);
+    const tasksArray = loadTasksFromLocalStorage();
 
     const isNotCompletedTaskExists = tasksArray.some(function(task) {
         return task.isCompleted === false;
@@ -150,35 +146,28 @@ function ifNoTasks() {
     }
 }
 
-function updateTaskCompletion(taskText, isChecked) {
-    const tasks = loadTasksFromLocalStorage();
-
-    const updatedTasks = tasks.map((task) => {
-        if (task.task === taskText) {
-            return {
-                task: taskText,
-                isCompleted: isChecked
-            };
-        }
-        return task;
-    });
-}
-
-
-
 function loadTasksFromLocalStorage() {
-    const savedTasks = localStorage.getItem('tasks');
-    return savedTasks ? JSON.parse(savedTasks) : [];
+    try {
+        const savedTasks = localStorage.getItem('tasks');
+        return savedTasks ? JSON.parse(savedTasks) : [];
+    } catch (error) {
+        console.error('Error loading tasks from localStorage:', error);
+        return [];
+    }
 }
 
 function loadTasks() {
-    const tasks = loadTasksFromLocalStorage();
+    try {
+        const tasks = loadTasksFromLocalStorage();
 
-    tasks.forEach((task) => {
-        createDeleteElements(task.task, task.isCompleted);
-    });
+        tasks.forEach((task) => {
+            createDeleteElements(task.task, task.isCompleted);
+        });
 
-    ifNoTasks();
+        ifNoTasks();
+    } catch (error) {
+        console.error('Error loading tasks:', error);
+    }
 }
 
 function saveTasks() {
