@@ -157,7 +157,6 @@ function loadTasksFromLocalStorage() {
 }
 
 function loadTasks() {
-    try {
         const tasks = loadTasksFromLocalStorage();
 
         tasks.forEach((task) => {
@@ -165,9 +164,6 @@ function loadTasks() {
         });
 
         ifNoTasks();
-    } catch (error) {
-        console.error('Error loading tasks:', error);
-    }
 }
 
 function saveTasks() {
